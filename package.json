@@ -18,6 +18,7 @@
   "homepage": "https://github.com/BobbyJoeSmith3/ThermalPrinter#readme",
   "dependencies": {
     "gm": "^1.23.1",
+    "request": "^2.88.0",
     "serialport": "^7.1.0",
     "thermalprinter": "^0.3.8"
   }
