@@ -33,15 +33,29 @@ function showError() {
   console.log('Serial port error: ' + error);
 }
 function readSerialData(data) {
-  console.log(data);
+  console.log(`data: ${data}`);
   // Send the latest data to all available webSocket clients
   // if (connections.length > 0) { // if there are webSocket connections
   //   broadcast(data); // send the serial data to all of them
   // }
-  if (data) {
+  if (data == "X\r") {
     console.log(`Received Print Button Data ${data}`);
+    var aMessage = "Written to Serial. How long of a senetence can I write? What will this look like on the printer? I hope it doesn't continue to print strangely.\n";
+    var splitMessage = aMessage.split("");
     // myPort.write("Hello Bobby Joe");
-    sendToSerial("Written to Serial. How long of a senetence can I write? What will this look like on the printer? I hope it doesn't continue to print strangely.");
+    for (character in splitMessage) {
+      sendToSerial(splitMessage[character]);
+      sleep(10);
+    }
+    //sendToSerial("Written to Serial. How long of a senetence can I write? What will this look like on the printer? I hope it doesn't continue to print strangely.\n");
+    //sendToSerial("ll this look like on the printer? I hope it doesn't continue to print strangely.\n");
+  } else {
+    console.log(typeof(data));
+    console.log(typeof("X"));
+    console.log(data == "X\r");
+    console.log(data == "X\n");
+    console.log(data == "X\n\r");
+    console.log(data == "\u0058\u000D\u000A");
   }
 }
 
@@ -50,6 +64,15 @@ function readSerialData(data) {
 function sendToSerial(data) {
   console.log("Sending to serial: " + data);
   myPort.write(data);
+}
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
 }
 
 
