@@ -13,14 +13,16 @@
 #define resetBtnPin 11
 #define printBtnPin 12
 #define upSwitchPin 10
-#define downSwitchPin 9
+#define downSwitchPin 9 // Available but Not Used
 #define TX_PIN 6 // Arduino transmit  YELLOW WIRE  labeled RX on printer
 #define RX_PIN 5 // Arduino receive   GREEN WIRE   labeled TX on printer
 
 int resetBtnState = 0;
 int printBtnState = 0;
 int upSwitchState = 0;
-int downSwitchState = 0;
+int prevResetBtnState = 0;
+int prevPrintBtnState = 0;
+int prevUpSwitchState = 0;
 
 SoftwareSerial mySerial(RX_PIN, TX_PIN); // Declare SoftwareSerial obj first
 Adafruit_Thermal printer(&mySerial);     // Pass addr to printer constructor
@@ -43,8 +45,8 @@ void setup() {
   // put your setup code here, to run once:
   pinMode(resetBtnPin, INPUT_PULLUP);
   pinMode(printBtnPin, INPUT_PULLUP);
-  pinMode(upSwitchPin, INPUT);
-  pinMode(downSwitchPin, INPUT);
+  pinMode(upSwitchPin, INPUT_PULLUP);
+  pinMode(downSwitchPin, INPUT_PULLUP);
   Serial.begin(19200); // USB Serial
   mySerial.begin(19200); // Printer Serial
   printer.begin();
@@ -59,18 +61,29 @@ void loop() {
   resetBtnState = digitalRead(resetBtnPin);
   printBtnState = digitalRead(printBtnPin);
   upSwitchState = digitalRead(upSwitchPin);
-  downSwitchState = digitalRead(downSwitchPin);
 
   if (printBtnState == LOW) {
-      Serial.println("X");
+      Serial.println("S");
+      delay(3000);
+  }
+  
+
+  if (resetBtnState == LOW) {
+      Serial.println('A');
       delay(1000);
   }
 
-  if (resetBtnState == LOW) {
-      Serial.print("inputString =====AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-      Serial.println(inputString);
-      delay(1000);
+  if (upSwitchState != prevUpSwitchState) {
+    //Serial.println("The switch changed");
+    if (upSwitchState == LOW) {
+      Serial.println("D");
+    } else if (upSwitchState == HIGH) {
+      Serial.println("W");
+    }
+    delay(100);
   }
+
+  prevUpSwitchState = upSwitchState;
 
   // print the string when a newline arrives:
   if (stringComplete) {
@@ -80,15 +93,7 @@ void loop() {
     stringComplete = false;
   }
 
-  // if (resetBtnState == LOW) {
-  //   Serial.println("Reset Button Pressed");
-  // }
-  // if (upSwitchState == HIGH) {
-  //   Serial.println("Recording Switch Activated");
-  // }
-  // if (downSwitchState == HIGH) {
-  //   Serial.println("Recording Switch De-Activated");
-  // }
+
 }
 
 // Called when data is available. Currently not compatible with the Leonardo

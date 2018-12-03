@@ -38,22 +38,42 @@ function readSerialData(data) {
   // if (connections.length > 0) { // if there are webSocket connections
   //   broadcast(data); // send the serial data to all of them
   // }
-  if (data == "X\r") {
-    console.log(`Received Print Button Data ${data}`);
-    var aMessage = "Fires can't be made with dead embers, nor can enthusiasm be stirred by spiritless men. Enthusiasim in our daily work lightens effort and turns even labor into pleasant tasks\n";
-    var splitMessage = aMessage.split("");
-    for (character in splitMessage) {
-      sendToSerial(splitMessage[character]);
-      sleep(10);
-    }
-  } else {
-    console.log(typeof(data));
-    console.log(typeof("X"));
-    console.log(data == "X\r");
-    console.log(data == "X\n");
-    console.log(data == "X\n\r");
-    console.log(data == "\u0058\u000D\u000A");
+  /*
+    d = start speech
+    w = pause speech
+    a = restart
+    s = print
+  */
+  if (data == "D\r") {
+    console.log("Start Speech Recording");
   }
+  if (data == "W\r") {
+    console.log("Pause Speech Recording");
+  }
+  if (data == "A\r") {
+    console.log("Restart");
+  }
+  if (data == "S\r") {
+    console.log("Print");
+  }
+
+  // if (data == "X\r") {
+  //   console.log(`Received Print Button Data ${data}`);
+  //   var aMessage = "Fires can't be made with dead embers, nor can enthusiasm be stirred by spiritless men. Enthusiasim in our daily work lightens effort and turns even labor into pleasant tasks\n";
+  //   var splitMessage = aMessage.split("");
+  //   for (character in splitMessage) {
+  //     sendToSerial(splitMessage[character]);
+  //     sleep(10);
+  //   }
+  // } else {
+  //   console.log(typeof(data));
+  //   console.log(typeof("X"));
+  //   console.log(data == "X\r");
+  //   console.log(data == "X\n");
+  //   console.log(data == "X\n\r");
+  //   console.log(data == "\u0058\u000D\u000A");
+  // }
+
 }
 
 
