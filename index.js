@@ -1,4 +1,5 @@
 var SerialPort = require('serialport');
+var WebSocketServer = require('ws').Server;
 const Printer = require('thermalprinter');
 const gm = require('gm');
 const request = require('request');
@@ -35,9 +36,9 @@ function showError() {
 function readSerialData(data) {
   console.log(`data: ${data}`);
   // Send the latest data to all available webSocket clients
-  // if (connections.length > 0) { // if there are webSocket connections
-  //   broadcast(data); // send the serial data to all of them
-  // }
+  if (connections.length > 0) { // if there are webSocket connections
+    broadcast(data); // send the serial data to all of them
+  }
   /*
     d = start speech
     w = pause speech
@@ -55,6 +56,7 @@ function readSerialData(data) {
   }
   if (data == "S\r") {
     console.log("Print");
+    // broadcast(sayHello());
   }
 
   // if (data == "X\r") {
@@ -81,6 +83,34 @@ function readSerialData(data) {
 function sendToSerial(data) {
   console.log("Sending to serial: " + data);
   myPort.write(data);
+}
+
+
+// create instance of WebSocketServer
+var SERVER_PORT = 8081; // port number for the webSocket Server
+var wss = new WebSocketServer({port: SERVER_PORT}); // the webSocket Server
+var connections = new Array; // list of connections to the server
+
+// webSocket event listeners
+wss.on('connection', handleConnection);
+
+function handleConnection(client) {
+  console.log("New Connection"); // you have a new client
+  connections.push(client); // add this client to the connections array
+
+  client.on('message', sendToSerial); // when a client sends a message
+  client.on('close', function() { // when a client closes its connection
+    console.log("Connection Closed"); // print it out
+    var position = connections.indexOf(client); // get the client's position in Array
+    connections.splice(position, 1); // and delete it from array
+  });
+}
+
+// Function to send serial data to the webSocket clients:
+function broadcast(data) {
+  for (myConnection in connections) { // iterate over the array of connections
+    connections[myConnection].send(data); // send data to each connection
+  }
 }
 
 function sleep(milliseconds) {
