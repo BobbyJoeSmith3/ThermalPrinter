@@ -40,15 +40,12 @@ function readSerialData(data) {
   // }
   if (data == "X\r") {
     console.log(`Received Print Button Data ${data}`);
-    var aMessage = "Written to Serial. How long of a senetence can I write? What will this look like on the printer? I hope it doesn't continue to print strangely.\n";
+    var aMessage = "Fires can't be made with dead embers, nor can enthusiasm be stirred by spiritless men. Enthusiasim in our daily work lightens effort and turns even labor into pleasant tasks\n";
     var splitMessage = aMessage.split("");
-    // myPort.write("Hello Bobby Joe");
     for (character in splitMessage) {
       sendToSerial(splitMessage[character]);
       sleep(10);
     }
-    //sendToSerial("Written to Serial. How long of a senetence can I write? What will this look like on the printer? I hope it doesn't continue to print strangely.\n");
-    //sendToSerial("ll this look like on the printer? I hope it doesn't continue to print strangely.\n");
   } else {
     console.log(typeof(data));
     console.log(typeof("X"));
